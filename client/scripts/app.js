@@ -13,15 +13,13 @@ app.init = function init() {
 
   app.clearMessages();
   //app.renderRoom('lobby');
-  setInterval(function(){
+  //setInterval(function(){
     app.fetch();
-  },1000);
+  //},1000);
   //app.fetch();
   $('.username').on('click', ()=>{
     app.handleUsernameClick();
   });
-
-  $('.submit').prop('value','save');
 
   $('.submit').on('click',function(){
 
@@ -93,32 +91,29 @@ app.clearMessages = function clearMessages() {
 
 
 app.renderMessage = function renderMessage(message) {
-  //1) Create node
-  // var $user = $('<div></div>').attr('class','username');
-  var $message = $('<div></div>');
-  $message.addClass('username');
-  //2) Add user name from message object to node
-  //3) Add the text of message from object to node
-  $message.text(message.username + ': ' + message.text);
+  var $message = $('<div></div>').attr('id','message');
+  var $user = $('<div></div>').attr('id',message.username);
+  var $text = $('<div></div>').attr('id','text');
+  $user.addClass('username');
+  $message.addClass('message');
+  $user.text(message.username + ': ');
+  $text.text(message.text);
 
-  //4) Append that node to #chats node
+  $message.append($user);
+  $message.append($text);
+  //$message.text(message.username + ': ' + message.text);
+
   
   $('#chats').append($message);
 
 };
 
 app.renderRoom = function renderRoom(roomName) {
-  var $room = $('<div></div>').attr('id', roomName);
-  
-  if ($('#roomSelect').children().length === 0) {
-    roomsList.push(roomName);
-    var $option = $(`<option value=${roomName}>${roomName}</option>`);
-    $('#roomSelect').append($option);
-  } else {
-    var $option = $(`<option value=${roomName}> ${roomName} </option>`);
-    $('#roomSelect').append($option);
-    $('#roomSelect').val(roomName);
-  }
+
+  var $option = $(`<option value=${roomName}> ${roomName} </option>`);
+  $('#roomSelect').append($option);
+  $('#roomSelect').val(roomName);
+
 
   currentRoom = roomName;
 
@@ -154,8 +149,8 @@ app.displayMessages = function () {
 $(document).ready(app.init);
 
 //to do
-//1) Add Rooms
-//2) Select a room
+//1) Add Rooms - DONE
+//2) Select a room - DONE
 //3) Add friends
 //4) Post a message -- DONE
 
