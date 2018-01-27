@@ -119,11 +119,19 @@ app.displayMessages = function () {
 
   for(var i = 0; i < fetchedMessagesList.length; i++) {
     message = fetchedMessagesList[i];
-    app.renderMessage(message);
+    if (message.text!== undefined && message.text.length<100 && message.roomname === currentRoom){
+      app.renderMessage(message);
+    }
+    
   }
 };
 
 
 $(document).ready(app.init);
 
+//to do
+//1) Add Rooms
+//2) Select a room
+//3) Add friends
+//4) Post a message
 
