@@ -12,16 +12,36 @@ app.init = function init() {
   
 
   app.clearMessages();
-  app.renderRoom('lobby');
-  //setInterval(app.fetch,1000);
-  app.fetch();
+  //app.renderRoom('lobby');
+  setInterval(function(){
+    app.fetch();
+  },1000);
+  //app.fetch();
   $('.username').on('click', ()=>{
     app.handleUsernameClick();
   });
 
-  $('.submit').on('submit', app.handleSubmit);
+  $('.submit').prop('value','save');
 
-  
+  $('.submit').on('click',function(){
+
+    app.handleSubmit();
+
+  });
+
+  $('#roomSelect').on('change', function () {
+    var optionSelected = $('option:selected', this);
+    if(this.value === 'newroom'){
+      var newRoom = prompt('Name your new room:');
+      app.renderRoom(newRoom);
+     
+    } else {
+      currentRoom = this.value;
+    }
+
+  });
+
+
 
 
 };
@@ -54,6 +74,7 @@ app.fetch = function fetch() {
     contentType: 'application/json',
     success: function(data){
       fetchedMessages = data;
+      app.clearMessages();
       app.displayMessages();
       console.log(fetchedMessages, 'chatterbox: Message received');
     },
@@ -66,12 +87,13 @@ app.fetch = function fetch() {
 
 app.clearMessages = function clearMessages() {
   $('#chats').remove();
+  var $chats = $('<div></div>').attr('id','chats');
+  $('#main').append($chats);
 };
 
 
 app.renderMessage = function renderMessage(message) {
   //1) Create node
-  var $chats = $('<div></div>').attr('id','chats');
   // var $user = $('<div></div>').attr('class','username');
   var $message = $('<div></div>');
   $message.addClass('username');
@@ -80,8 +102,8 @@ app.renderMessage = function renderMessage(message) {
   $message.text(message.username + ': ' + message.text);
 
   //4) Append that node to #chats node
-  $('#main').append($chats);
-  $chats.append($message);
+  
+  $('#chats').append($message);
 
 };
 
@@ -90,15 +112,12 @@ app.renderRoom = function renderRoom(roomName) {
   
   if ($('#roomSelect').children().length === 0) {
     roomsList.push(roomName);
-    var $rooms = $('<div>Room</div>').attr('id','rooms');
-    var $roomSelector = $('<select></select>').attr('id','roomSelect');
     var $option = $(`<option value=${roomName}>${roomName}</option>`);
-    $('#main').prepend($rooms);
-    $('#rooms').append($roomSelector);
     $('#roomSelect').append($option);
   } else {
     var $option = $(`<option value=${roomName}> ${roomName} </option>`);
     $('#roomSelect').append($option);
+    $('#roomSelect').val(roomName);
   }
 
   currentRoom = roomName;
@@ -110,7 +129,12 @@ app.handleUsernameClick = function(){
 };
 
 app.handleSubmit = function(){
+  //do stuff
 
+  var textValue = $('#message').val();
+  var name = window.location.search.substr(10);
+  var message = {username:name,text:textValue,roomname:currentRoom};
+  app.send(JSON.stringify(message));
 };
 
 app.displayMessages = function () {
@@ -133,5 +157,5 @@ $(document).ready(app.init);
 //1) Add Rooms
 //2) Select a room
 //3) Add friends
-//4) Post a message
+//4) Post a message -- DONE
 
