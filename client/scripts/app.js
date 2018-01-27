@@ -3,6 +3,7 @@
 
 var app = {};
 var roomsList = [];
+var friendsList = [];
 var currentRoom;
 var fetchedMessages;
 app.server = 'http://parse.sfm8.hackreactor.com/chatterbox/classes/messages';
@@ -13,9 +14,9 @@ app.init = function init() {
 
   app.clearMessages();
   //app.renderRoom('lobby');
-  //setInterval(function(){
+  setInterval(function(){
     app.fetch();
-  //},1000);
+  },1000);
   //app.fetch();
   $('.username').on('click', ()=>{
     app.handleUsernameClick();
@@ -36,11 +37,9 @@ app.init = function init() {
     } else {
       currentRoom = this.value;
     }
-
   });
 
-
-
+ 
 
 };
 
@@ -74,6 +73,11 @@ app.fetch = function fetch() {
       fetchedMessages = data;
       app.clearMessages();
       app.displayMessages();
+
+     $('.username').on('click',function(){
+        console.log($(this).attr('id'),' added to Class');
+        friendsList.push($(this).attr('id'));
+     });
       console.log(fetchedMessages, 'chatterbox: Message received');
     },
     error: function(data){
@@ -90,12 +94,15 @@ app.clearMessages = function clearMessages() {
 };
 
 
-app.renderMessage = function renderMessage(message) {
+app.renderMessage = function renderMessage(message, friend) {
   var $message = $('<div></div>').attr('id','message');
   var $user = $('<div></div>').attr('id',message.username);
   var $text = $('<div></div>').attr('id','text');
   $user.addClass('username');
   $message.addClass('message');
+  if (friend){
+    $message.addClass('friend');
+  }
   $user.text(message.username + ': ');
   $text.text(message.text);
 
@@ -135,13 +142,18 @@ app.handleSubmit = function(){
 app.displayMessages = function () {
   fetchedMessagesList = fetchedMessages.results;
   var message = {};  
-
+  var friend = false;
   for(var i = 0; i < fetchedMessagesList.length; i++) {
     message = fetchedMessagesList[i];
-    if (message.text!== undefined && message.text.length<100 && message.roomname === currentRoom){
-      app.renderMessage(message);
+    if (friendsList.indexOf(message.username) !== -1) {
+      friend = true;
+    } else{
+      friend = false;
     }
-    
+    message.text = message.text === undefined ? " " : message.text;
+    if (message.text.length<100 && message.roomname === currentRoom){
+      app.renderMessage(message, friend);
+    }
   }
 };
 

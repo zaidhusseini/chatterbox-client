@@ -90,22 +90,33 @@ form input[type=text] {
 
 .friend {
     color: #fff;
-    background-color: #0090da;
+    background-color: #aa9ad5;
+    font-weight: bold;
 }
 
-.message {
+#message {
     color: black;
     margin: 10px;
+    padding: 5px;
+    border: 0.1px solid black;
+    border-style: solid;
+    border-radius: 5px;
 }
 
 .username {
     color: black;
     display: inline-block;
     float: left;
-  
+    margin-right: 5px;
+    font-weight: bold;
+}
+.username:hover{
+    cursor: pointer;
+    font-style: italic;
+    color: blue;
+    text-decoration: underline;
 }
 
-.text{
-       display: inline-block;
-
+#text{
+  display: inline-block;      
 }
